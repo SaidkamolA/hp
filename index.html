@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎉 С Днем Рождения! 🎂</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Фон с анимированными элементами -->
+        <div class="background">
+            <div class="floating-heart">💜</div>
+            <div class="floating-star">🎬</div>
+            <div class="floating-balloon">🎭</div>
+            <div class="floating-cake">🎂</div>
+            <div class="floating-heart">💖</div>
+            <div class="floating-star">🌟</div>
+            <div class="floating-balloon">🎊</div>
+            <div class="floating-cake">🍿</div>
+            <div class="floating-bts">💜</div>
+            <div class="floating-film">🎬</div>
+            <div class="floating-cake-slice">🍰</div>
+        </div>
+
+        <!-- Главный заголовок -->
+        <div class="main-title">
+            <h1 class="birthday-text">С Днем Рождения! 🎬💜</h1>
+            <div class="subtitle">Любительнице фильмов и BTS</div>
+            <div class="sparkles">
+                <span>✨</span>
+                <span>💜</span>
+                <span>🎬</span>
+                <span>🌟</span>
+                <span>✨</span>
+            </div>
+        </div>
+
+        <!-- Анимированный подарок -->
+        <div class="gift-container">
+            <div class="gift-box" id="giftBox">
+                <div class="gift-ribbon">
+                    <div class="ribbon-corner"></div>
+                    <div class="ribbon-corner"></div>
+                    <div class="ribbon-corner"></div>
+                    <div class="ribbon-corner"></div>
+                </div>
+                <div class="gift-lid">
+                    <div class="gift-bow">🎀</div>
+                </div>
+                <div class="gift-body">
+                    <div class="gift-pattern">🎁</div>
+                </div>
+                <div class="gift-shadow"></div>
+            </div>
+            
+            <!-- Текст-подсказка -->
+            <div class="gift-hint">
+                <p>🎯 Нажми на подарок, чтобы увидеть сюрприз! 🎬💜</p>
+            </div>
+        </div>
+
+        <!-- Модальное окно с видео -->
+        <div class="modal" id="videoModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>🎉 Поздравление! 🎉</h2>
+                    <button class="close-btn" id="closeModal">✨</button>
+                </div>
+                <div class="modal-body">
+                    <div class="video-container">
+                        <video id="birthdayVideo" controls>
+                            <source src="hp.MOV" type="video/mp4">
+                            Ваш браузер не поддерживает видео.
+                        </video>
+                    </div>
+                    <div class="birthday-message">
+                        <h3>🎂 С Днем Рождения! 🎬💜</h3>
+                        <p>Поздравляю тебя с днём рождения! 🎉 Пусть этот день принесёт море радости, тепла и ярких эмоций! Желаю тебе крепкого здоровья, бесконечного вдохновения, успехов во всех начинаниях и счастья в каждом мгновении. Пусть каждый новый день будет полон сюрпризов, любви и поддержки близких! 🎂💖 С праздником!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Дополнительные элементы -->
+        <div class="celebration-elements">
+            <div class="confetti-container" id="confettiContainer"></div>
+            <div class="firework-container" id="fireworkContainer"></div>
+        </div>
+
+        <!-- Музыкальный плеер -->
+        <audio id="backgroundMusic" loop>
+            <source src="music.mp3" type="audio/mp3">
+            Ваш браузер не поддерживает аудио.
+        </audio>
+        <button id="musicToggle" style="position: fixed; bottom: 20px; right: 20px; padding: 10px 20px; border-radius: 20px; border: none; cursor: pointer; font-size: 1rem; background: linear-gradient(45deg, #ff6b6b, #ff8e8e);">▶️</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
