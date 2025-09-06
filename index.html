@@ -1,16 +1,29 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎉 С Днем Рождения! 🎂</title>
+    <title>🎉 Happy Birthday! 🎂</title>
     <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Roboto:wght@300;400;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 </head>
 <body>
+    <!-- Cinematic Curtain Reveal -->
+    <div class="curtain-reveal" id="curtainReveal">
+        <div class="curtain-left"></div>
+        <div class="curtain-right"></div>
+        <div class="curtain-text">🎬 Happy Birthday! 🎂</div>
+    </div>
+
+    <!-- Particle System -->
+    <canvas id="particleCanvas" class="particle-canvas"></canvas>
+
     <div class="container">
-        <!-- Фон с анимированными элементами -->
+        <!-- Enhanced Background with BTS Theme -->
         <div class="background">
+            <div class="bts-gradient-overlay"></div>
             <div class="floating-heart">💜</div>
             <div class="floating-star">🎬</div>
             <div class="floating-balloon">🎭</div>
@@ -22,10 +35,85 @@
             <div class="floating-bts">💜</div>
             <div class="floating-film">🎬</div>
             <div class="floating-cake-slice">🍰</div>
+            
+            <!-- BTS Member Silhouettes -->
+            <div class="bts-silhouette" data-member="rm">👤</div>
+            <div class="bts-silhouette" data-member="jin">👤</div>
+            <div class="bts-silhouette" data-member="suga">👤</div>
+            <div class="bts-silhouette" data-member="jhope">👤</div>
+            <div class="bts-silhouette" data-member="jimin">👤</div>
+            <div class="bts-silhouette" data-member="v">👤</div>
+            <div class="bts-silhouette" data-member="jk">👤</div>
+            
+
         </div>
 
-        <!-- Главный заголовок -->
-      
+        <!-- Enhanced Main Title -->
+        <div class="main-title">
+            <h1 class="birthday-text">Happy Birthday! 🎬💜</h1>
+            <div class="subtitle">Who Loves Movies & BTS</div>
+            <div class="sparkles">
+                <span>✨</span>
+                <span>💜</span>
+                <span>🎬</span>
+                <span>🌟</span>
+                <span>✨</span>
+            </div>
+        </div>
+
+        <!-- Interactive BTS Photo Gallery -->
+        <div class="bts-gallery" id="btsGallery">
+            <h3>💜 BTS Moments 💜</h3>
+            <div class="gallery-grid">
+                <div class="gallery-item" data-member="rm">
+                    <div class="member-card">
+                        <div class="member-emoji">🎤</div>
+                        <div class="member-name">RM</div>
+                    </div>
+                </div>
+                <div class="gallery-item" data-member="jin">
+                    <div class="member-card">
+                        <div class="member-emoji">🎭</div>
+                        <div class="member-name">Jin</div>
+                    </div>
+                </div>
+                <div class="gallery-item" data-member="suga">
+                    <div class="member-card">
+                        <div class="member-emoji">🎹</div>
+                        <div class="member-name">Suga</div>
+                    </div>
+                </div>
+                <div class="gallery-item" data-member="jhope">
+                    <div class="member-card">
+                        <div class="member-emoji">💃</div>
+                        <div class="member-name">J-Hope</div>
+                    </div>
+                </div>
+                <div class="gallery-item" data-member="jimin">
+                    <div class="member-card">
+                        <div class="member-emoji">💫</div>
+                        <div class="member-name">Jimin</div>
+                    </div>
+                </div>
+                <div class="gallery-item" data-member="v">
+                    <div class="member-card">
+                        <div class="member-emoji">🎨</div>
+                        <div class="member-name">V</div>
+                    </div>
+                </div>
+                <div class="gallery-item" data-member="jk">
+                    <div class="member-card">
+                        <div class="member-emoji">🏆</div>
+                        <div class="member-name">Jungkook</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Wishing Wall -->
+
+        </div>
+
         <!-- Анимированный подарок -->
         <div class="gift-container">
             <div class="gift-box" id="giftBox">
@@ -50,23 +138,45 @@
             </div>
         </div>
 
-        <!-- Модальное окно с видео -->
+        <!-- Enhanced Modal with Cinematic Video Player -->
         <div class="modal" id="videoModal">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h2>🎉 Поздравление! 🎉</h2>
-                    <button class="close-btn" id="closeModal">✨</button>
+                    <h2>🎉 Birthday Surprise! 🎉</h2>
+                    <button class="close-btn" id="closeModal" aria-label="Close modal">✨</button>
                 </div>
                 <div class="modal-body">
                     <div class="video-container">
-                        <video id="birthdayVideo" controls>
+                        <div class="film-reel-left">🎬</div>
+                        <div class="film-reel-right">🎬</div>
+                        <video id="birthdayVideo" controls class="cinematic-video">
                             <source src="hp.MOV" type="video/mp4">
-                            Ваш браузер не поддерживает видео.
+                            Your browser does not support video playback.
                         </video>
+                        <div class="video-overlay">
+                            <div class="play-button" id="playButton">▶️</div>
+                        </div>
                     </div>
                     <div class="birthday-message">
-                        <h3>🎂 С Днем Рождения! 🎬💜</h3>
-                        <p>Поздравляю тебя с днём рождения! 🎉 Пусть этот день принесёт море радости, тепла и ярких эмоций! Желаю тебе крепкого здоровья, бесконечного вдохновения, успехов во всех начинаниях и счастья в каждом мгновении. Пусть каждый новый день будет полон сюрпризов, любви и поддержки близких! 🎂💖 С праздником!</p>
+                        <h3>🎂 Happy Birthday! 🎬💜</h3>
+                        <p>С Днём Рождения! 🎉 Пусть этот особенный день принесёт тебе бесконечную радость, тепло и яркие эмоции! Желаю тебе крепкого здоровья, безграничного вдохновения, успехов во всех начинаниях и счастья в каждом мгновении. Пусть каждый новый день будет полон сюрпризов, любви и поддержки близких! 🎂💖 Празднуй великолепно!</p>
+                        
+                        <!-- Memory Timeline -->
+                        <div class="memory-timeline">
+                            <h4>💝Special Memories 💝</h4>
+                            <div class="timeline-item">
+                                <div class="timeline-date">Childhood</div>
+                                <div class="timeline-content">Watching movies and singing BTS songs! 🎬🎵</div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">Teenage Years</div>
+                                <div class="timeline-content">Late night BTS concert streams and movie marathons! 🌙💜</div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">Today</div>
+                                <div class="timeline-content">Celebrating another year of your amazing journey! 🎂✨</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -78,12 +188,48 @@
             <div class="firework-container" id="fireworkContainer"></div>
         </div>
 
-        <!-- Музыкальный плеер -->
-        <audio id="backgroundMusic" loop>
-            <source src="music.mp3" type="audio/mp3">
-            Ваш браузер не поддерживает аудио.
-        </audio>
-        <button id="musicToggle" style="position: fixed; bottom: 20px; right: 20px; padding: 10px 20px; border-radius: 20px; border: none; cursor: pointer; font-size: 1rem; background: linear-gradient(45deg, #ff6b6b, #ff8e8e);">▶️</button>
+        <!-- Enhanced Music Player -->
+        <div class="music-player" id="musicPlayer">
+            <div class="player-header">
+                <h4>🎵 BTS Playlist 🎵</h4>
+                <button class="player-toggle" id="playerToggle">🎵</button>
+            </div>
+            <div class="playlist" id="playlist">
+                <div class="track active" data-src="music.mp3">
+                    <span class="track-name">Birthday Song</span>
+                    <span class="track-duration">3:45</span>
+                </div>
+                <div class="track" data-src="music.mp3">
+                    <span class="track-name">Spring Day</span>
+                    <span class="track-duration">4:34</span>
+                </div>
+                <div class="track" data-src="music.mp3">
+                    <span class="track-name">Dynamite</span>
+                    <span class="track-duration">3:19</span>
+                </div>
+            </div>
+            <div class="player-controls">
+                <button class="control-btn" id="prevBtn">⏮️</button>
+                <button class="control-btn" id="playBtn">▶️</button>
+                <button class="control-btn" id="nextBtn">⏭️</button>
+                <div class="volume-control">
+                    <span>🔊</span>
+                    <input type="range" id="volumeSlider" min="0" max="100" value="70">
+                </div>
+            </div>
+        </div>
+
+        <!-- Mini Game: Catch BTS Hearts -->
+
+
+        <!-- Hidden Surprise -->
+        <div class="surprise-modal" id="surpriseModal">
+            <div class="surprise-content">
+                <h2 id="surpriseTitle">🎉 Surprise! 🎉</h2>
+                <div id="surpriseMessage"></div>
+                <button class="close-surprise" id="closeSurprise">✨</button>
+            </div>
+        </div>
     </div>
 
     <script src="script.js"></script>
