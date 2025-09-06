@@ -95,7 +95,7 @@ giftBox.addEventListener('click', function() {
     openGift();
 });
 
-// Обработчик закрытия модального окна
+// Обработчик закрытия модального окна (кнопка)
 closeModal.addEventListener('click', function() {
     console.log('Закрытие модального окна');
     closeGift();
@@ -117,6 +117,17 @@ document.addEventListener('keydown', function(e) {
         createCloseConfetti();
     }
 });
+
+// Поддержка клавиатуры и touch для подарка
+giftBox.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openGift();
+    }
+});
+giftBox.addEventListener('touchstart', () => {
+    openGift();
+}, { passive: true });
 
 // Функция открытия подарка
 function openGift() {
@@ -312,19 +323,7 @@ function animateBTSHearts() {
 
 setInterval(animateBTSHearts, 3000);
 
-if (musicToggle) {
-    musicToggle.addEventListener('click', function() {
-        if (backgroundMusic.paused) {
-            backgroundMusic.play();
-            musicToggle.textContent = '⏸️';
-            musicToggle.style.background = 'linear-gradient(45deg, #4ecdc4, #44a08d)';
-        } else {
-            backgroundMusic.pause();
-            musicToggle.textContent = '▶️';
-            musicToggle.style.background = 'linear-gradient(45deg, #ff6b6b, #ff8e8e)';
-        }
-    });
-}
+// Удалены ссылки на несуществующие backgroundMusic/musicToggle
 
 // Particle System
 function initParticleSystem() {
@@ -427,16 +426,7 @@ function initLyricsRotation() {
     }, 4000);
 }
 
-document.addEventListener('click', function() {
-    if (backgroundMusic && backgroundMusic.paused) {
-        backgroundMusic.play().then(() => {
-            if (musicToggle) {
-                musicToggle.textContent = '⏸️';
-                musicToggle.style.background = 'linear-gradient(45deg, #4ecdc4, #44a08d)';
-            }
-        }).catch(e => console.log('Автовоспроизведение заблокировано'));
-    }
-}, { once: true });
+// Удалена автопопытка воспроизведения несуществующей музыки
 
 // Enhanced Music Player
 function initMusicPlayer() {
@@ -496,6 +486,19 @@ function initMusicPlayer() {
     volumeSlider.addEventListener('input', (e) => {
         currentAudio.volume = e.target.value / 100;
     });
+
+    // Auto play selected track after user gesture on mobile when pressing play overlay
+    const playOverlay = document.getElementById('playButton');
+    const video = document.getElementById('birthdayVideo');
+    if (playOverlay && video) {
+        playOverlay.addEventListener('click', () => {
+            if (video.paused) {
+                video.play().catch(() => {});
+            } else {
+                video.pause();
+            }
+        });
+    }
     
     function loadTrack(track) {
         currentAudio.src = track.src;

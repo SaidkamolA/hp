@@ -45,6 +45,10 @@
             <div class="bts-silhouette" data-member="v">👤</div>
             <div class="bts-silhouette" data-member="jk">👤</div>
             
+            <!-- Song Lyrics Display -->
+            <div class="lyrics-display" id="lyricsDisplay">
+                <div class="lyrics-text">"You are my everything"</div>
+            </div>
 
         </div>
 
@@ -111,12 +115,21 @@
         </div>
 
         <!-- Wishing Wall -->
-
+        <div class="wishing-wall" id="wishingWall">
+            <h3>💝 Оставь пожелание 💝</h3>
+            <div class="wish-input-container">
+                <input type="text" id="wishInput" placeholder="Напиши своё пожелание..." maxlength="100">
+                <button id="addWishBtn">✨ Добавить</button>
+            </div>
+            <div class="wishes-container" id="wishesContainer">
+                <div class="wish-item">С Днём Рождения! 🎂</div>
+                <div class="wish-item">Пусть все мечты сбываются! 🌟</div>
+            </div>
         </div>
 
         <!-- Анимированный подарок -->
         <div class="gift-container">
-            <div class="gift-box" id="giftBox">
+            <div class="gift-box" id="giftBox" tabindex="0" role="button" aria-label="Открыть подарок">
                 <div class="gift-ribbon">
                     <div class="ribbon-corner"></div>
                     <div class="ribbon-corner"></div>
@@ -143,14 +156,14 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h2>🎉 Birthday Surprise! 🎉</h2>
-                    <button class="close-btn" id="closeModal" aria-label="Close modal">✨</button>
+                    <button class="close-btn" id="closeModal" aria-label="Закрыть модальное окно" title="Закрыть">Закрыть ✖</button>
                 </div>
                 <div class="modal-body">
                     <div class="video-container">
                         <div class="film-reel-left">🎬</div>
                         <div class="film-reel-right">🎬</div>
-                        <video id="birthdayVideo" controls class="cinematic-video">
-                            <source src="hp.MOV" type="video/mp4">
+                        <video id="birthdayVideo" controls playsinline class="cinematic-video">
+                            <source src="hp.MOV">
                             Your browser does not support video playback.
                         </video>
                         <div class="video-overlay">
@@ -220,14 +233,21 @@
         </div>
 
         <!-- Mini Game: Catch BTS Hearts -->
-
+        <div class="mini-game" id="miniGame">
+            <h3>💜 Поймай сердечки BTS! 💜</h3>
+            <div class="game-area" id="gameArea">
+                <div class="score">Score: <span id="gameScore">0</span></div>
+                <div class="game-instructions">Кликай по падающим сердечкам, чтобы поймать их!</div>
+            </div>
+            <button class="start-game-btn" id="startGameBtn">Start Game</button>
+        </div>
 
         <!-- Hidden Surprise -->
         <div class="surprise-modal" id="surpriseModal">
             <div class="surprise-content">
                 <h2 id="surpriseTitle">🎉 Surprise! 🎉</h2>
                 <div id="surpriseMessage"></div>
-                <button class="close-surprise" id="closeSurprise">✨</button>
+                <button class="close-surprise" id="closeSurprise" aria-label="Закрыть сюрприз" title="Закрыть">Закрыть ✖</button>
             </div>
         </div>
     </div>
