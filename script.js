@@ -1,11 +1,41 @@
-// Основные элементы
+// Enhanced Elements
 const giftBox = document.getElementById('giftBox');
 const videoModal = document.getElementById('videoModal');
 const closeModal = document.getElementById('closeModal');
 const confettiContainer = document.getElementById('confettiContainer');
 const fireworkContainer = document.getElementById('fireworkContainer');
-const backgroundMusic = document.getElementById('backgroundMusic');
-const musicToggle = document.getElementById('musicToggle');
+const curtainReveal = document.getElementById('curtainReveal');
+const particleCanvas = document.getElementById('particleCanvas');
+const lyricsDisplay = document.getElementById('lyricsDisplay');
+const btsGallery = document.getElementById('btsGallery');
+const wishingWall = document.getElementById('wishingWall');
+const wishInput = document.getElementById('wishInput');
+const addWishBtn = document.getElementById('addWishBtn');
+const wishesContainer = document.getElementById('wishesContainer');
+const musicPlayer = document.getElementById('musicPlayer');
+const playerToggle = document.getElementById('playerToggle');
+const playlist = document.getElementById('playlist');
+const playBtn = document.getElementById('playBtn');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const volumeSlider = document.getElementById('volumeSlider');
+const miniGame = document.getElementById('miniGame');
+const gameArea = document.getElementById('gameArea');
+const gameScore = document.getElementById('gameScore');
+const startGameBtn = document.getElementById('startGameBtn');
+const surpriseModal = document.getElementById('surpriseModal');
+const surpriseTitle = document.getElementById('surpriseTitle');
+const surpriseMessage = document.getElementById('surpriseMessage');
+const closeSurprise = document.getElementById('closeSurprise');
+
+// Global Variables
+let currentTrackIndex = 0;
+let gameActive = false;
+let gameScoreValue = 0;
+let particles = [];
+let particleAnimationId;
+let gameInterval;
+let surpriseShown = false;
 
 // Устанавливаем фоновый градиент в зависимости от времени
 function setBackgroundByTime() {
@@ -16,19 +46,47 @@ function setBackgroundByTime() {
 }
 setBackgroundByTime();
 
-// Анимация подарка при загрузке
+// Enhanced Initialization
 document.addEventListener('DOMContentLoaded', function() {
+    // Start curtain reveal animation
+    setTimeout(() => {
+        curtainReveal.style.display = 'none';
+    }, 3000);
+    
+    // Initialize particle system
+    initParticleSystem();
+    
+    // Initialize BTS lyrics rotation
+    initLyricsRotation();
+    
+    // Initialize music player
+    initMusicPlayer();
+    
+    // Initialize wishing wall
+    initWishingWall();
+    
+    // Initialize mini game
+    initMiniGame();
+    
+    // Initialize surprise system
+    initSurpriseSystem();
+    
+    // Initialize accessibility features
+    initAccessibility();
+    
+    // Start gift box animation
     setTimeout(() => {
         giftBox.style.animation = 'giftFloat 4s ease-in-out infinite';
     }, 1000);
     
     createFloatingElements();
     
-    console.log('Gift box:', giftBox);
-    console.log('Video modal:', videoModal);
-    console.log('Close modal:', closeModal);
-    console.log('Background music:', backgroundMusic);
-    console.log('Music toggle:', musicToggle);
+    // Random surprise trigger
+    setTimeout(() => {
+        if (!surpriseShown && Math.random() < 0.3) {
+            showRandomSurprise();
+        }
+    }, 10000);
 });
 
 // Обработчик клика по подарку
@@ -268,6 +326,107 @@ if (musicToggle) {
     });
 }
 
+// Particle System
+function initParticleSystem() {
+    const canvas = particleCanvas;
+    const ctx = canvas.getContext('2d');
+    
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+    
+    class Particle {
+        constructor() {
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height;
+            this.vx = (Math.random() - 0.5) * 2;
+            this.vy = (Math.random() - 0.5) * 2;
+            this.size = Math.random() * 3 + 1;
+            this.color = `hsl(${Math.random() * 60 + 270}, 70%, 60%)`;
+            this.opacity = Math.random() * 0.5 + 0.2;
+        }
+        
+        update() {
+            this.x += this.vx;
+            this.y += this.vy;
+            
+            if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+            if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+        }
+        
+        draw() {
+            ctx.save();
+            ctx.globalAlpha = this.opacity;
+            ctx.fillStyle = this.color;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        }
+    }
+    
+    function createParticles() {
+        for (let i = 0; i < 50; i++) {
+            particles.push(new Particle());
+        }
+    }
+    
+    function animateParticles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        particles.forEach(particle => {
+            particle.update();
+            particle.draw();
+        });
+        
+        particleAnimationId = requestAnimationFrame(animateParticles);
+    }
+    
+    createParticles();
+    animateParticles();
+    
+    // Mouse interaction
+    canvas.addEventListener('mousemove', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
+        
+        particles.forEach(particle => {
+            const dx = mouseX - particle.x;
+            const dy = mouseY - particle.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance < 100) {
+                const force = (100 - distance) / 100;
+                particle.vx += dx * force * 0.01;
+                particle.vy += dy * force * 0.01;
+            }
+        });
+    });
+}
+
+// BTS Lyrics Rotation
+function initLyricsRotation() {
+    const lyrics = [
+        "Happy Birthday to you",
+        "Forever and always",
+        "Dreams come true",
+        "You are beautiful"
+    ];
+    
+    let currentLyricIndex = 0;
+    
+    setInterval(() => {
+        const lyricsText = lyricsDisplay.querySelector('.lyrics-text');
+        lyricsText.textContent = `"${lyrics[currentLyricIndex]}"`;
+        currentLyricIndex = (currentLyricIndex + 1) % lyrics.length;
+    }, 4000);
+}
+
 document.addEventListener('click', function() {
     if (backgroundMusic && backgroundMusic.paused) {
         backgroundMusic.play().then(() => {
@@ -278,3 +437,342 @@ document.addEventListener('click', function() {
         }).catch(e => console.log('Автовоспроизведение заблокировано'));
     }
 }, { once: true });
+
+// Enhanced Music Player
+function initMusicPlayer() {
+    const tracks = [
+        { name: "Birthday Song", duration: "3:45", src: "music.mp3" },
+        { name: "Spring Day", duration: "4:34", src: "music.mp3" },
+        { name: "Dynamite", duration: "3:19", src: "music.mp3" }
+    ];
+    
+    let currentAudio = new Audio();
+    let isPlaying = false;
+    
+    // Player toggle
+    playerToggle.addEventListener('click', () => {
+        musicPlayer.classList.toggle('show');
+    });
+    
+    // Track selection
+    playlist.addEventListener('click', (e) => {
+        const track = e.target.closest('.track');
+        if (track) {
+            document.querySelectorAll('.track').forEach(t => t.classList.remove('active'));
+            track.classList.add('active');
+            currentTrackIndex = Array.from(playlist.children).indexOf(track);
+            loadTrack(tracks[currentTrackIndex]);
+        }
+    });
+    
+    // Play/Pause
+    playBtn.addEventListener('click', () => {
+        if (isPlaying) {
+            currentAudio.pause();
+            playBtn.textContent = '▶️';
+            isPlaying = false;
+        } else {
+            currentAudio.play();
+            playBtn.textContent = '⏸️';
+            isPlaying = true;
+        }
+    });
+    
+    // Previous track
+    prevBtn.addEventListener('click', () => {
+        currentTrackIndex = (currentTrackIndex - 1 + tracks.length) % tracks.length;
+        updateActiveTrack();
+        loadTrack(tracks[currentTrackIndex]);
+    });
+    
+    // Next track
+    nextBtn.addEventListener('click', () => {
+        currentTrackIndex = (currentTrackIndex + 1) % tracks.length;
+        updateActiveTrack();
+        loadTrack(tracks[currentTrackIndex]);
+    });
+    
+    // Volume control
+    volumeSlider.addEventListener('input', (e) => {
+        currentAudio.volume = e.target.value / 100;
+    });
+    
+    function loadTrack(track) {
+        currentAudio.src = track.src;
+        currentAudio.load();
+    }
+    
+    function updateActiveTrack() {
+        document.querySelectorAll('.track').forEach(t => t.classList.remove('active'));
+        playlist.children[currentTrackIndex].classList.add('active');
+    }
+    
+    // Initialize first track
+    loadTrack(tracks[0]);
+    currentAudio.volume = 0.7;
+}
+
+// Wishing Wall
+function initWishingWall() {
+    addWishBtn.addEventListener('click', addWish);
+    wishInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            addWish();
+        }
+    });
+    
+    function addWish() {
+        const wishText = wishInput.value.trim();
+        if (wishText) {
+            const wishItem = document.createElement('div');
+            wishItem.className = 'wish-item';
+            wishItem.textContent = wishText;
+            wishesContainer.appendChild(wishItem);
+            wishInput.value = '';
+            
+            // Animate new wish
+            wishItem.style.opacity = '0';
+            wishItem.style.transform = 'translateX(-50px)';
+            setTimeout(() => {
+                wishItem.style.transition = 'all 0.5s ease';
+                wishItem.style.opacity = '1';
+                wishItem.style.transform = 'translateX(0)';
+            }, 100);
+            
+            // Play sound effect
+            playSoundEffect('sparkle');
+        }
+    }
+}
+
+// Mini Game: Catch BTS Hearts
+function initMiniGame() {
+    startGameBtn.addEventListener('click', startGame);
+    
+    function startGame() {
+        if (gameActive) return;
+        
+        gameActive = true;
+        gameScoreValue = 0;
+        gameScore.textContent = '0';
+        startGameBtn.textContent = 'Game Active!';
+        startGameBtn.disabled = true;
+        
+        // Start dropping hearts
+        gameInterval = setInterval(() => {
+            if (gameActive) {
+                createFallingHeart();
+            }
+        }, 1000);
+        
+        // End game after 30 seconds
+        setTimeout(() => {
+            endGame();
+        }, 30000);
+    }
+    
+    function createFallingHeart() {
+        const heart = document.createElement('div');
+        heart.className = 'falling-heart';
+        heart.textContent = '💜';
+        heart.style.left = Math.random() * (gameArea.offsetWidth - 40) + 'px';
+        heart.style.top = '-50px';
+        
+        gameArea.appendChild(heart);
+        
+        heart.addEventListener('click', () => {
+            gameScoreValue++;
+            gameScore.textContent = gameScoreValue;
+            heart.remove();
+            createSparkleEffect(heart.offsetLeft, heart.offsetTop);
+            playSoundEffect('heart');
+        });
+        
+        setTimeout(() => {
+            if (heart.parentNode) {
+                heart.remove();
+            }
+        }, 3000);
+    }
+    
+    function endGame() {
+        gameActive = false;
+        clearInterval(gameInterval);
+        startGameBtn.textContent = 'Start Game';
+        startGameBtn.disabled = false;
+        
+        // Show final score
+        alert(`Game Over! Final Score: ${gameScoreValue}`);
+    }
+}
+
+// Surprise System
+function initSurpriseSystem() {
+    closeSurprise.addEventListener('click', () => {
+        surpriseModal.classList.remove('show');
+    });
+    
+    surpriseModal.addEventListener('click', (e) => {
+        if (e.target === surpriseModal) {
+            surpriseModal.classList.remove('show');
+        }
+    });
+}
+
+function showRandomSurprise() {
+    const surprises = [
+        {
+            title: "🎉 BTS Member Greeting! 🎉",
+            message: "RM says: 'Happy Birthday! Keep shining bright like a diamond!' 💎"
+        },
+        {
+            title: "🎂 Special Message! 🎂",
+            message: "Jin wishes you: 'May your day be filled with laughter and joy!' 😄"
+        },
+        {
+            title: "💜 Secret Surprise! 💜",
+            message: "Suga's message: 'Dream big and never give up on your goals!' 🌟"
+        },
+        {
+            title: "🎵 Birthday Song! 🎵",
+            message: "J-Hope sings: 'Happy Birthday to you, my amazing sister!' 🎤"
+        },
+        {
+            title: "✨ Magical Wish! ✨",
+            message: "Jimin's wish: 'May all your dreams come true today!' 💫"
+        },
+        {
+            title: "🎨 Creative Birthday! 🎨",
+            message: "V's message: 'You're a masterpiece, keep creating beautiful memories!' 🖼️"
+        },
+        {
+            title: "🏆 Golden Birthday! 🏆",
+            message: "Jungkook's wish: 'You're the champion of our hearts!' 🥇"
+        }
+    ];
+    
+    const randomSurprise = surprises[Math.floor(Math.random() * surprises.length)];
+    surpriseTitle.textContent = randomSurprise.title;
+    surpriseMessage.textContent = randomSurprise.message;
+    surpriseModal.classList.add('show');
+    surpriseShown = true;
+    
+    // Play celebration sound
+    playSoundEffect('celebration');
+}
+
+// Sound Effects
+function playSoundEffect(type) {
+    try {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        let frequency;
+        switch(type) {
+            case 'sparkle':
+                frequency = 800;
+                break;
+            case 'heart':
+                frequency = 600;
+                break;
+            case 'celebration':
+                frequency = 1000;
+                break;
+            default:
+                frequency = 500;
+        }
+        
+        oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+        oscillator.type = 'sine';
+        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+        
+        oscillator.start();
+        oscillator.stop(audioContext.currentTime + 0.5);
+    } catch (e) {
+        console.log('Audio not supported');
+    }
+}
+
+// Sparkle Effect
+function createSparkleEffect(x, y) {
+    const sparkle = document.createElement('div');
+    sparkle.style.position = 'absolute';
+    sparkle.style.left = x + 'px';
+    sparkle.style.top = y + 'px';
+    sparkle.style.fontSize = '2rem';
+    sparkle.style.color = 'gold';
+    sparkle.style.pointerEvents = 'none';
+    sparkle.style.zIndex = '1000';
+    sparkle.textContent = '✨';
+    
+    document.body.appendChild(sparkle);
+    
+    sparkle.animate([
+        { transform: 'scale(0) rotate(0deg)', opacity: 1 },
+        { transform: 'scale(1.5) rotate(180deg)', opacity: 0 }
+    ], {
+        duration: 1000,
+        easing: 'ease-out'
+    }).onfinish = () => sparkle.remove();
+}
+
+// Accessibility Features
+function initAccessibility() {
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Tab') {
+            document.body.classList.add('keyboard-navigation');
+        }
+    });
+    
+    document.addEventListener('mousedown', () => {
+        document.body.classList.remove('keyboard-navigation');
+    });
+    
+    // Focus management
+    const focusableElements = document.querySelectorAll('button, input, [tabindex]');
+    focusableElements.forEach(element => {
+        element.addEventListener('focus', () => {
+            element.style.outline = '2px solid var(--bts-purple)';
+        });
+        
+        element.addEventListener('blur', () => {
+            element.style.outline = 'none';
+        });
+    });
+}
+
+// BTS Gallery Interaction
+document.querySelectorAll('.gallery-item').forEach(item => {
+    item.addEventListener('click', () => {
+        const member = item.dataset.member;
+        const memberNames = {
+            'rm': 'RM',
+            'jin': 'Jin',
+            'suga': 'Suga',
+            'jhope': 'J-Hope',
+            'jimin': 'Jimin',
+            'v': 'V',
+            'jk': 'Jungkook'
+        };
+        
+        showRandomSurprise();
+        surpriseTitle.textContent = `💜 ${memberNames[member]} Says! 💜`;
+        surpriseMessage.textContent = `Happy Birthday from ${memberNames[member]}! You're amazing! 🌟`;
+    });
+});
+
+// Cleanup on page unload
+window.addEventListener('beforeunload', () => {
+    if (particleAnimationId) {
+        cancelAnimationFrame(particleAnimationId);
+    }
+    if (gameInterval) {
+        clearInterval(gameInterval);
+    }
+});
