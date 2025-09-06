@@ -1,4 +1,4 @@
-// Enhanced Elements
+// Simple Elements
 const giftBox = document.getElementById('giftBox');
 const videoModal = document.getElementById('videoModal');
 const closeModal = document.getElementById('closeModal');
@@ -6,27 +6,12 @@ const confettiContainer = document.getElementById('confettiContainer');
 const fireworkContainer = document.getElementById('fireworkContainer');
 const curtainReveal = document.getElementById('curtainReveal');
 const particleCanvas = document.getElementById('particleCanvas');
-const lyricsDisplay = document.getElementById('lyricsDisplay');
-const btsGallery = document.getElementById('btsGallery');
-const wishingWall = document.getElementById('wishingWall');
-const wishInput = document.getElementById('wishInput');
-const addWishBtn = document.getElementById('addWishBtn');
-const wishesContainer = document.getElementById('wishesContainer');
-const musicPlayer = document.getElementById('musicPlayer');
-const playerToggle = document.getElementById('playerToggle');
-const playlist = document.getElementById('playlist');
-const playBtn = document.getElementById('playBtn');
-const prevBtn = document.getElementById('prevBtn');
-const nextBtn = document.getElementById('nextBtn');
-const volumeSlider = document.getElementById('volumeSlider');
-const miniGame = document.getElementById('miniGame');
-const gameArea = document.getElementById('gameArea');
-const gameScore = document.getElementById('gameScore');
-const startGameBtn = document.getElementById('startGameBtn');
 const surpriseModal = document.getElementById('surpriseModal');
 const surpriseTitle = document.getElementById('surpriseTitle');
 const surpriseMessage = document.getElementById('surpriseMessage');
 const closeSurprise = document.getElementById('closeSurprise');
+const backgroundMusic = document.getElementById('backgroundMusic');
+const musicToggle = document.getElementById('musicToggle');
 
 // Global Variables
 let currentTrackIndex = 0;
@@ -46,73 +31,102 @@ function setBackgroundByTime() {
 }
 setBackgroundByTime();
 
-// Enhanced Initialization
+// Mobile Detection and Optimization
+const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+// Performance optimization for mobile devices
+if (isMobile) {
+    // Reduce particle count on mobile
+    window.mobileOptimized = true;
+    
+    // Disable some animations on low-end devices
+    if (navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4) {
+        document.body.classList.add('low-performance');
+    }
+}
+
+// Simple Initialization
 document.addEventListener('DOMContentLoaded', function() {
     // Start curtain reveal animation
-    setTimeout(() => {
-        curtainReveal.style.display = 'none';
-    }, 3000);
+    if (curtainReveal) {
+        setTimeout(() => {
+            curtainReveal.style.display = 'none';
+        }, 3000);
+    }
     
-    // Initialize particle system
-    initParticleSystem();
-    
-    // Initialize BTS lyrics rotation
-    initLyricsRotation();
-    
-    // Initialize music player
-    initMusicPlayer();
-    
-    // Initialize wishing wall
-    initWishingWall();
-    
-    // Initialize mini game
-    initMiniGame();
+    // Initialize particle system with mobile optimization
+    if (particleCanvas) {
+        initParticleSystem();
+    }
     
     // Initialize surprise system
-    initSurpriseSystem();
-    
-    // Initialize accessibility features
-    initAccessibility();
+    if (surpriseModal && surpriseTitle && surpriseMessage && closeSurprise) {
+        initSurpriseSystem();
+    }
     
     // Start gift box animation
-    setTimeout(() => {
-        giftBox.style.animation = 'giftFloat 4s ease-in-out infinite';
-    }, 1000);
+    if (giftBox) {
+        setTimeout(() => {
+            giftBox.style.animation = 'giftFloat 4s ease-in-out infinite';
+        }, 1000);
+    }
     
     createFloatingElements();
     
-    // Random surprise trigger
+    // Random surprise trigger (less frequent on mobile)
+    const surpriseDelay = isMobile ? 15000 : 10000;
     setTimeout(() => {
         if (!surpriseShown && Math.random() < 0.3) {
             showRandomSurprise();
         }
-    }, 10000);
-});
-
-// Обработчик клика по подарку
-giftBox.addEventListener('click', function() {
-    console.log('Подарок нажат!');
-    openGift();
-});
-
-// Обработчик закрытия модального окна
-closeModal.addEventListener('click', function() {
-    console.log('Закрытие модального окна');
-    closeGift();
-    createCloseConfetti();
-});
-
-// Закрытие по клику вне модального окна
-videoModal.addEventListener('click', function(e) {
-    if (e.target === videoModal) {
-        closeGift();
-        createCloseConfetti();
+    }, surpriseDelay);
+    
+    // Add touch event listeners for better mobile interaction
+    if (isTouchDevice) {
+        addTouchOptimizations();
     }
 });
 
+// Обработчик клика и клавиатуры по подарку
+if (giftBox) {
+    giftBox.addEventListener('click', function() {
+        console.log('Подарок нажат!');
+        openGift();
+    });
+    
+    // Поддержка клавиатуры для доступности
+    giftBox.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            console.log('Подарок активирован клавиатурой!');
+            openGift();
+        }
+    });
+}
+
+// Обработчик закрытия модального окна
+if (closeModal) {
+    closeModal.addEventListener('click', function() {
+        console.log('Закрытие модального окна');
+        closeGift();
+        createCloseConfetti();
+    });
+}
+
+// Закрытие по клику вне модального окна (отключено для фиксированного модального окна)
+// if (videoModal) {
+//     videoModal.addEventListener('click', function(e) {
+//         if (e.target === videoModal) {
+//             closeGift();
+//             createCloseConfetti();
+//         }
+//     });
+// }
+
 // Закрытие по клавише Escape
 document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape' && videoModal.classList.contains('show')) {
+    if (e.key === 'Escape' && videoModal && videoModal.classList.contains('show')) {
         closeGift();
         createCloseConfetti();
     }
@@ -122,29 +136,58 @@ document.addEventListener('keydown', function(e) {
 function openGift() {
     console.log('Функция openGift вызвана');
     
-    giftBox.classList.add('opening');
+    if (giftBox) {
+        giftBox.classList.add('opening');
+    }
     
     setTimeout(() => {
-        giftBox.style.transform = 'scale(1.5) translateY(-10%)';
-        giftBox.style.transition = 'transform 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
-        videoModal.classList.add('show');
+        if (giftBox) {
+            giftBox.style.transform = 'scale(1.5) translateY(-10%)';
+            giftBox.style.transition = 'transform 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+        }
+        if (videoModal) {
+            videoModal.classList.add('show');
+        }
         createConfetti();
         createSparkles();
         createFireworks();
         playGiftSound();
         const video = document.getElementById('birthdayVideo');
         if (video) {
-            video.play().catch(e => console.log('Автовоспроизведение заблокировано'));
+            // Добавляем обработчики событий для видео
+            video.addEventListener('loadeddata', function() {
+                console.log('Видео загружено');
+            });
+            
+            video.addEventListener('error', function(e) {
+                console.log('Ошибка загрузки видео:', e);
+                showVideoError();
+            });
+            
+            video.addEventListener('canplay', function() {
+                console.log('Видео готово к воспроизведению');
+            });
+            
+            // Попытка воспроизведения с обработкой ошибок
+            video.play().catch(e => {
+                console.log('Автовоспроизведение заблокировано:', e);
+                // Показываем кнопку воспроизведения
+                showVideoPlayButton();
+            });
         }
     }, 1500);
 }
 
 // Функция закрытия подарка
 function closeGift() {
-    videoModal.classList.remove('show');
-    giftBox.classList.remove('opening');
-    giftBox.style.transform = 'scale(1)';
-    giftBox.style.transition = 'transform 0.5s ease-in-out';
+    if (videoModal) {
+        videoModal.classList.remove('show');
+    }
+    if (giftBox) {
+        giftBox.classList.remove('opening');
+        giftBox.style.transform = 'scale(1)';
+        giftBox.style.transition = 'transform 0.5s ease-in-out';
+    }
     const video = document.getElementById('birthdayVideo');
     if (video) {
         video.pause();
@@ -154,6 +197,8 @@ function closeGift() {
 
 // Создание конфетти
 function createConfetti() {
+    if (!confettiContainer) return;
+    
     const colors = ['#ff6b6b', '#4ecdc4', '#ffe66d', '#ff8e8e', '#a8e6cf', '#ffb3ba'];
     for (let i = 0; i < 150; i++) {
         setTimeout(() => {
@@ -190,6 +235,8 @@ function createSparkles() {
 
 // Создание фейерверков
 function createFireworks() {
+    if (!fireworkContainer) return;
+    
     const fireworkCount = 10;
     for (let i = 0; i < fireworkCount; i++) {
         setTimeout(() => {
@@ -205,6 +252,8 @@ function createFireworks() {
 
 // Создание конфетти при закрытии
 function createCloseConfetti() {
+    if (!confettiContainer) return;
+    
     for (let i = 0; i < 50; i++) {
         setTimeout(() => {
             const confetti = document.createElement('div');
@@ -219,10 +268,15 @@ function createCloseConfetti() {
     }
 }
 
-// Создание дополнительных плавающих элементов
+// Создание дополнительных плавающих элементов с оптимизацией
 function createFloatingElements() {
     const container = document.querySelector('.background');
-    for (let i = 0; i < 8; i++) {
+    if (!container) return;
+    
+    // Reduce number of elements on mobile
+    const elementCount = isMobile ? 4 : 8;
+    
+    for (let i = 0; i < elementCount; i++) {
         setTimeout(() => {
             const element = document.createElement('div');
             const emojis = ['🎉', '🎊', '🎈', '🎁', '🍰', '💝', '🌟', '✨', '🎬', '💜', '🎭', '🍿', '🎪', '🎨', '🎵', '🎤'];
@@ -232,15 +286,95 @@ function createFloatingElements() {
             element.style.top = Math.random() * 100 + '%';
             element.style.fontSize = clamp(1, Math.random() * 1.5 + 0.8, 2) + 'rem';
             element.style.opacity = '0.6';
+            
+            // Use CSS classes for better performance
+            element.className = 'floating-element';
             element.style.animation = `float ${Math.random() * 4 + 4}s ease-in-out infinite`;
             element.style.animationDelay = Math.random() * 2 + 's';
+            
             container.appendChild(element);
-        }, i * 800);
+        }, i * (isMobile ? 1200 : 800));
     }
 }
 
 function clamp(min, val, max) {
     return Math.min(Math.max(val, min), max);
+}
+
+// Функция для показа кнопки воспроизведения видео
+function showVideoPlayButton() {
+    const video = document.getElementById('birthdayVideo');
+    const playButton = document.getElementById('playButton');
+    
+    if (video && playButton) {
+        playButton.style.display = 'flex';
+        playButton.style.opacity = '1';
+        
+        // Добавляем обработчик клика на кнопку
+        playButton.addEventListener('click', function() {
+            // Убираем muted атрибут для воспроизведения
+            video.muted = false;
+            
+            video.play().then(() => {
+                playButton.style.display = 'none';
+            }).catch(e => {
+                console.log('Ошибка воспроизведения:', e);
+                // Показываем сообщение пользователю
+                showVideoError();
+            });
+        });
+    }
+}
+
+// Функция для показа ошибки воспроизведения видео
+function showVideoError() {
+    const video = document.getElementById('birthdayVideo');
+    if (video) {
+        // Создаем сообщение об ошибке
+        const errorDiv = document.createElement('div');
+        errorDiv.style.cssText = `
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.9);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            z-index: 10;
+            max-width: 300px;
+        `;
+        errorDiv.innerHTML = `
+            <h3>🎬 Проблема с видео</h3>
+            <p>Не удалось автоматически воспроизвести видео.</p>
+            <p>Попробуйте:</p>
+            <ul style="text-align: left; margin: 10px 0;">
+                <li>Нажать на видео напрямую</li>
+                <li>Обновить страницу</li>
+                <li>Проверить подключение к интернету</li>
+            </ul>
+            <button onclick="this.parentElement.remove()" style="
+                background: #667eea;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 5px;
+                cursor: pointer;
+                margin-top: 10px;
+            ">Понятно</button>
+        `;
+        
+        const videoContainer = video.parentElement;
+        videoContainer.appendChild(errorDiv);
+        
+        // Автоматически убираем сообщение через 10 секунд
+        setTimeout(() => {
+            if (errorDiv.parentElement) {
+                errorDiv.remove();
+            }
+        }, 10000);
+    }
 }
 
 // Звуковой эффект открытия подарка
@@ -263,23 +397,25 @@ function playGiftSound() {
 }
 
 // Эффекты при наведении и клике
-giftBox.addEventListener('mouseenter', function() {
-    this.style.filter = 'brightness(1.2) drop-shadow(0 0 20px rgba(255,255,255,0.5))';
-});
+if (giftBox) {
+    giftBox.addEventListener('mouseenter', function() {
+        this.style.filter = 'brightness(1.2) drop-shadow(0 0 20px rgba(255,255,255,0.5))';
+    });
 
-giftBox.addEventListener('mouseleave', function() {
-    this.style.filter = 'brightness(1) drop-shadow(0 15px 30px rgba(0,0,0,0.2))';
-});
+    giftBox.addEventListener('mouseleave', function() {
+        this.style.filter = 'brightness(1) drop-shadow(0 15px 30px rgba(0,0,0,0.2))';
+    });
 
-giftBox.addEventListener('mousedown', function() {
-    this.style.animation = 'shake 0.5s ease-in-out';
-});
+    giftBox.addEventListener('mousedown', function() {
+        this.style.animation = 'shake 0.5s ease-in-out';
+    });
 
-giftBox.addEventListener('mouseup', function() {
-    setTimeout(() => {
-        this.style.animation = 'giftFloat 4s ease-in-out infinite';
-    }, 500);
-});
+    giftBox.addEventListener('mouseup', function() {
+        setTimeout(() => {
+            this.style.animation = 'giftFloat 4s ease-in-out infinite';
+        }, 500);
+    });
+}
 
 function animateOnScroll() {
     const elements = document.querySelectorAll('.gift-container, .main-title');
@@ -312,7 +448,7 @@ function animateBTSHearts() {
 
 setInterval(animateBTSHearts, 3000);
 
-if (musicToggle) {
+if (musicToggle && backgroundMusic) {
     musicToggle.addEventListener('click', function() {
         if (backgroundMusic.paused) {
             backgroundMusic.play();
@@ -326,7 +462,34 @@ if (musicToggle) {
     });
 }
 
-// Particle System
+// Touch Optimizations
+function addTouchOptimizations() {
+    // Prevent zoom on double tap
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', function (event) {
+        const now = (new Date()).getTime();
+        if (now - lastTouchEnd <= 300) {
+            event.preventDefault();
+        }
+        lastTouchEnd = now;
+    }, false);
+    
+    // Add haptic feedback for supported devices
+    if (navigator.vibrate) {
+        giftBox.addEventListener('touchstart', function() {
+            navigator.vibrate(50);
+        });
+        
+        closeModal.addEventListener('touchstart', function() {
+            navigator.vibrate(30);
+        });
+    }
+    
+    // Improve touch scrolling
+    document.body.style.webkitOverflowScrolling = 'touch';
+}
+
+// Particle System with Mobile Optimization
 function initParticleSystem() {
     const canvas = particleCanvas;
     const ctx = canvas.getContext('2d');
@@ -370,7 +533,9 @@ function initParticleSystem() {
     }
     
     function createParticles() {
-        for (let i = 0; i < 50; i++) {
+        // Reduce particle count on mobile devices
+        const particleCount = isMobile ? 25 : 50;
+        for (let i = 0; i < particleCount; i++) {
             particles.push(new Particle());
         }
     }
@@ -389,15 +554,20 @@ function initParticleSystem() {
     createParticles();
     animateParticles();
     
-    // Mouse interaction
-    canvas.addEventListener('mousemove', (e) => {
+    // Mouse/Touch interaction
+    function handleInteraction(e) {
         const rect = canvas.getBoundingClientRect();
-        const mouseX = e.clientX - rect.left;
-        const mouseY = e.clientY - rect.top;
+        const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+        const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+        
+        if (!clientX || !clientY) return;
+        
+        const interactionX = clientX - rect.left;
+        const interactionY = clientY - rect.top;
         
         particles.forEach(particle => {
-            const dx = mouseX - particle.x;
-            const dy = mouseY - particle.y;
+            const dx = interactionX - particle.x;
+            const dy = interactionY - particle.y;
             const distance = Math.sqrt(dx * dx + dy * dy);
             
             if (distance < 100) {
@@ -406,208 +576,40 @@ function initParticleSystem() {
                 particle.vy += dy * force * 0.01;
             }
         });
+    }
+    
+    canvas.addEventListener('mousemove', handleInteraction);
+    canvas.addEventListener('touchmove', handleInteraction);
+}
+
+// Simple Music Toggle
+if (musicToggle && backgroundMusic) {
+    musicToggle.addEventListener('click', function() {
+        if (backgroundMusic.paused) {
+            backgroundMusic.play();
+            musicToggle.textContent = '⏸️';
+        } else {
+            backgroundMusic.pause();
+            musicToggle.textContent = '🎵';
+        }
     });
 }
 
-// BTS Lyrics Rotation
-function initLyricsRotation() {
-    const lyrics = [
-        "Happy Birthday to you",
-        "Forever and always",
-        "Dreams come true",
-        "You are beautiful"
-    ];
-    
-    let currentLyricIndex = 0;
-    
-    setInterval(() => {
-        const lyricsText = lyricsDisplay.querySelector('.lyrics-text');
-        lyricsText.textContent = `"${lyrics[currentLyricIndex]}"`;
-        currentLyricIndex = (currentLyricIndex + 1) % lyrics.length;
-    }, 4000);
-}
-
+// Auto-play music on first click
 document.addEventListener('click', function() {
     if (backgroundMusic && backgroundMusic.paused) {
         backgroundMusic.play().then(() => {
             if (musicToggle) {
                 musicToggle.textContent = '⏸️';
-                musicToggle.style.background = 'linear-gradient(45deg, #4ecdc4, #44a08d)';
             }
         }).catch(e => console.log('Автовоспроизведение заблокировано'));
     }
 }, { once: true });
 
-// Enhanced Music Player
-function initMusicPlayer() {
-    const tracks = [
-        { name: "Birthday Song", duration: "3:45", src: "music.mp3" },
-        { name: "Spring Day", duration: "4:34", src: "music.mp3" },
-        { name: "Dynamite", duration: "3:19", src: "music.mp3" }
-    ];
-    
-    let currentAudio = new Audio();
-    let isPlaying = false;
-    
-    // Player toggle
-    playerToggle.addEventListener('click', () => {
-        musicPlayer.classList.toggle('show');
-    });
-    
-    // Track selection
-    playlist.addEventListener('click', (e) => {
-        const track = e.target.closest('.track');
-        if (track) {
-            document.querySelectorAll('.track').forEach(t => t.classList.remove('active'));
-            track.classList.add('active');
-            currentTrackIndex = Array.from(playlist.children).indexOf(track);
-            loadTrack(tracks[currentTrackIndex]);
-        }
-    });
-    
-    // Play/Pause
-    playBtn.addEventListener('click', () => {
-        if (isPlaying) {
-            currentAudio.pause();
-            playBtn.textContent = '▶️';
-            isPlaying = false;
-        } else {
-            currentAudio.play();
-            playBtn.textContent = '⏸️';
-            isPlaying = true;
-        }
-    });
-    
-    // Previous track
-    prevBtn.addEventListener('click', () => {
-        currentTrackIndex = (currentTrackIndex - 1 + tracks.length) % tracks.length;
-        updateActiveTrack();
-        loadTrack(tracks[currentTrackIndex]);
-    });
-    
-    // Next track
-    nextBtn.addEventListener('click', () => {
-        currentTrackIndex = (currentTrackIndex + 1) % tracks.length;
-        updateActiveTrack();
-        loadTrack(tracks[currentTrackIndex]);
-    });
-    
-    // Volume control
-    volumeSlider.addEventListener('input', (e) => {
-        currentAudio.volume = e.target.value / 100;
-    });
-    
-    function loadTrack(track) {
-        currentAudio.src = track.src;
-        currentAudio.load();
-    }
-    
-    function updateActiveTrack() {
-        document.querySelectorAll('.track').forEach(t => t.classList.remove('active'));
-        playlist.children[currentTrackIndex].classList.add('active');
-    }
-    
-    // Initialize first track
-    loadTrack(tracks[0]);
-    currentAudio.volume = 0.7;
-}
-
-// Wishing Wall
-function initWishingWall() {
-    addWishBtn.addEventListener('click', addWish);
-    wishInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            addWish();
-        }
-    });
-    
-    function addWish() {
-        const wishText = wishInput.value.trim();
-        if (wishText) {
-            const wishItem = document.createElement('div');
-            wishItem.className = 'wish-item';
-            wishItem.textContent = wishText;
-            wishesContainer.appendChild(wishItem);
-            wishInput.value = '';
-            
-            // Animate new wish
-            wishItem.style.opacity = '0';
-            wishItem.style.transform = 'translateX(-50px)';
-            setTimeout(() => {
-                wishItem.style.transition = 'all 0.5s ease';
-                wishItem.style.opacity = '1';
-                wishItem.style.transform = 'translateX(0)';
-            }, 100);
-            
-            // Play sound effect
-            playSoundEffect('sparkle');
-        }
-    }
-}
-
-// Mini Game: Catch BTS Hearts
-function initMiniGame() {
-    startGameBtn.addEventListener('click', startGame);
-    
-    function startGame() {
-        if (gameActive) return;
-        
-        gameActive = true;
-        gameScoreValue = 0;
-        gameScore.textContent = '0';
-        startGameBtn.textContent = 'Game Active!';
-        startGameBtn.disabled = true;
-        
-        // Start dropping hearts
-        gameInterval = setInterval(() => {
-            if (gameActive) {
-                createFallingHeart();
-            }
-        }, 1000);
-        
-        // End game after 30 seconds
-        setTimeout(() => {
-            endGame();
-        }, 30000);
-    }
-    
-    function createFallingHeart() {
-        const heart = document.createElement('div');
-        heart.className = 'falling-heart';
-        heart.textContent = '💜';
-        heart.style.left = Math.random() * (gameArea.offsetWidth - 40) + 'px';
-        heart.style.top = '-50px';
-        
-        gameArea.appendChild(heart);
-        
-        heart.addEventListener('click', () => {
-            gameScoreValue++;
-            gameScore.textContent = gameScoreValue;
-            heart.remove();
-            createSparkleEffect(heart.offsetLeft, heart.offsetTop);
-            playSoundEffect('heart');
-        });
-        
-        setTimeout(() => {
-            if (heart.parentNode) {
-                heart.remove();
-            }
-        }, 3000);
-    }
-    
-    function endGame() {
-        gameActive = false;
-        clearInterval(gameInterval);
-        startGameBtn.textContent = 'Start Game';
-        startGameBtn.disabled = false;
-        
-        // Show final score
-        alert(`Game Over! Final Score: ${gameScoreValue}`);
-    }
-}
-
 // Surprise System
 function initSurpriseSystem() {
+    if (!closeSurprise || !surpriseModal) return;
+    
     closeSurprise.addEventListener('click', () => {
         surpriseModal.classList.remove('show');
     });
@@ -619,47 +621,6 @@ function initSurpriseSystem() {
     });
 }
 
-function showRandomSurprise() {
-    const surprises = [
-        {
-            title: "🎉 BTS Member Greeting! 🎉",
-            message: "RM says: 'Happy Birthday! Keep shining bright like a diamond!' 💎"
-        },
-        {
-            title: "🎂 Special Message! 🎂",
-            message: "Jin wishes you: 'May your day be filled with laughter and joy!' 😄"
-        },
-        {
-            title: "💜 Secret Surprise! 💜",
-            message: "Suga's message: 'Dream big and never give up on your goals!' 🌟"
-        },
-        {
-            title: "🎵 Birthday Song! 🎵",
-            message: "J-Hope sings: 'Happy Birthday to you, my amazing sister!' 🎤"
-        },
-        {
-            title: "✨ Magical Wish! ✨",
-            message: "Jimin's wish: 'May all your dreams come true today!' 💫"
-        },
-        {
-            title: "🎨 Creative Birthday! 🎨",
-            message: "V's message: 'You're a masterpiece, keep creating beautiful memories!' 🖼️"
-        },
-        {
-            title: "🏆 Golden Birthday! 🏆",
-            message: "Jungkook's wish: 'You're the champion of our hearts!' 🥇"
-        }
-    ];
-    
-    const randomSurprise = surprises[Math.floor(Math.random() * surprises.length)];
-    surpriseTitle.textContent = randomSurprise.title;
-    surpriseMessage.textContent = randomSurprise.message;
-    surpriseModal.classList.add('show');
-    surpriseShown = true;
-    
-    // Play celebration sound
-    playSoundEffect('celebration');
-}
 
 // Sound Effects
 function playSoundEffect(type) {
@@ -721,50 +682,12 @@ function createSparkleEffect(x, y) {
     }).onfinish = () => sparkle.remove();
 }
 
-// Accessibility Features
-function initAccessibility() {
-    // Keyboard navigation
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Tab') {
-            document.body.classList.add('keyboard-navigation');
-        }
-    });
-    
-    document.addEventListener('mousedown', () => {
-        document.body.classList.remove('keyboard-navigation');
-    });
-    
-    // Focus management
-    const focusableElements = document.querySelectorAll('button, input, [tabindex]');
-    focusableElements.forEach(element => {
-        element.addEventListener('focus', () => {
-            element.style.outline = '2px solid var(--bts-purple)';
-        });
-        
-        element.addEventListener('blur', () => {
-            element.style.outline = 'none';
-        });
-    });
-}
-
-// BTS Gallery Interaction
-document.querySelectorAll('.gallery-item').forEach(item => {
-    item.addEventListener('click', () => {
-        const member = item.dataset.member;
-        const memberNames = {
-            'rm': 'RM',
-            'jin': 'Jin',
-            'suga': 'Suga',
-            'jhope': 'J-Hope',
-            'jimin': 'Jimin',
-            'v': 'V',
-            'jk': 'Jungkook'
-        };
-        
-        showRandomSurprise();
-        surpriseTitle.textContent = `💜 ${memberNames[member]} Says! 💜`;
-        surpriseMessage.textContent = `Happy Birthday from ${memberNames[member]}! You're amazing! 🌟`;
-    });
+// Simple Accessibility
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && videoModal && videoModal.classList.contains('show')) {
+        closeGift();
+        createCloseConfetti();
+    }
 });
 
 // Cleanup on page unload
